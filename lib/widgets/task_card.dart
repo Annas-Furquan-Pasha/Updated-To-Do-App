@@ -15,44 +15,60 @@ class TaskCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final task = Provider.of<Tasks>(context).findById(id);
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).pushNamed(TaskDetailsScreen.routeName, arguments: task.id);
-        },
-        child: Card(
-          color: Theme.of(context).canvasColor,
-          margin: const EdgeInsets.only(top: 8, right: 8, left: 8),
-          elevation: 10,
-          child: Column(
-            children: [
-              ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Theme.of(context).colorScheme.secondary,
-                  child: Text(index.toString(), style: Theme.of(context).textTheme.displaySmall),
+    return Dismissible(
+      key: ValueKey(id),
+      background: Container(
+        color: Colors.redAccent,
+        margin: const EdgeInsets.only(top: 8, right: 8, left: 8),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.all(8.0),
+        child: const Icon(Icons.delete, color: Colors.white, size: 30,),
+      ),
+      direction: DismissDirection.endToStart,
+      onDismissed: (direction) async {
+        if(direction == DismissDirection.endToStart) {
+          Provider.of<Tasks>(context, listen: false).deleteTask(task.id);
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: InkWell(
+          onTap: () {
+            Navigator.of(context).pushNamed(TaskDetailsScreen.routeName, arguments: task.id);
+          },
+          child: Card(
+            color: Theme.of(context).canvasColor,
+            margin: const EdgeInsets.only(top: 8, right: 8, left: 8),
+            elevation: 10,
+            child: Column(
+              children: [
+                ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    child: Text(index.toString(), style: Theme.of(context).textTheme.displaySmall),
+                  ),
+                  title: Text(task.title, style: Theme.of(context).textTheme.displayLarge,),
+                  subtitle: Text(task.dueDate, style: Theme.of(context).textTheme.displayMedium,),
                 ),
-                title: Text(task.title, style: Theme.of(context).textTheme.displayLarge,),
-                subtitle: Text(task.dueDate, style: Theme.of(context).textTheme.displayMedium,),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(AddTaskScreen.routeName, arguments: task.id);
-                      },
-                    icon: const Icon(Icons.edit),
-                  ),
-                  IconButton(
-                      onPressed: () {
-                        Provider.of<Tasks>(context, listen: false).deleteTask(task.id);
-                      },
-                      icon: const Icon(Icons.delete, color: Colors.red,),
-                  ),
-                ],
-              )
-            ],
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(AddTaskScreen.routeName, arguments: task.id);
+                        },
+                      icon: const Icon(Icons.edit),
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          Provider.of<Tasks>(context, listen: false).deleteTask(task.id);
+                        },
+                        icon: const Icon(Icons.delete, color: Colors.red,),
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
