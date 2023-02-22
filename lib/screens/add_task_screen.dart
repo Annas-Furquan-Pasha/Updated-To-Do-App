@@ -19,15 +19,18 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final _form = GlobalKey<FormState>();
   final _timeController = TextEditingController();
   final _dateController = TextEditingController();
+  var id;
 
   var _isInit = true;
 
   var _initValues = {
+    'lId' : '',
     'title' : '',
     'description' : '',
   };
 
   var _editTask = Task(
+    lId: '',
     id: '',
     title:  '',
     description: '',
@@ -38,17 +41,26 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   @override
   void didChangeDependencies() {
     if(_isInit) {
-      final tryId = ModalRoute.of(context)!.settings.arguments;
-      if(tryId != null) {
-        final id = tryId as String;
-        _editTask = Provider.of<Tasks>(context, listen: false).findById(id);
+      final tryId = ModalRoute.of(context)!.settings.arguments as List;
+      id = tryId;
+      if(tryId.length == 1) {
         _initValues = {
-          'title' : _editTask.title,
-          'description' : _editTask.description,
+          'lId' : id[0],
+          'title' : '',
+          'description' : '',
         };
-        _timeController.text = _editTask.dueTime;
-        _dateController.text = _editTask.dueDate;
+        _isInit = false;
+        return ;
       }
+      _editTask = Provider.of<Tasks>(context, listen: false).findById(id[0], id[1]);
+      _initValues = {
+        'lId' : id[0],
+        'title' : _editTask.title,
+        'description' : _editTask.description,
+      };
+      _timeController.text = _editTask.dueTime;
+      _dateController.text = _editTask.dueDate;
+
     }
     _isInit = false;
     super.didChangeDependencies();
@@ -61,9 +73,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     // }
     _form.currentState?.save();
     if(_editTask.id != '') {
-      Provider.of<Tasks>(context, listen: false).updateTask(_editTask.id, _editTask);
+      Provider.of<Tasks>(context, listen: false).updateTask(id[0], _editTask.id, _editTask);
     }else {
-      Provider.of<Tasks>(context, listen: false).addTask(_editTask);
+      Provider.of<Tasks>(context, listen: false).addTask(id[0], _editTask);
     }
     Navigator.of(context).pop();
   }
@@ -101,6 +113,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   ),
                   onSaved: (value) {
                     _editTask = Task(
+                      lId: _initValues['lId']!,
                         id: _editTask.id,
                         title: value!,
                         description: _editTask.description,
@@ -122,6 +135,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   ),
                   onSaved: (value) {
                     _editTask = Task(
+                      lId: _initValues['lId']!,
                       id: _editTask.id,
                       title: _editTask.title,
                       description: value!,
@@ -145,6 +159,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         ),
                         onSaved: (value) {
                           _editTask = Task(
+                            lId: _initValues['lId']!,
                             id: _editTask.id,
                             title: _editTask.title,
                             description: _editTask.description,
@@ -195,6 +210,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         },
                         onSaved: (value) {
                           _editTask = Task(
+                            lId: _initValues['lId']!,
                             id: _editTask.id,
                             title: _editTask.title,
                             description: _editTask.description,

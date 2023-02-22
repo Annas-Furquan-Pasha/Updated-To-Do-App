@@ -12,43 +12,33 @@ class TaskScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final items = Provider.of<Tasks>(context).tasks;
+    final lId = ModalRoute.of(context)!.settings.arguments as String;
+    final items = Provider.of<Tasks>(context).findListById(lId);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tasks', style: Theme.of(context).textTheme.titleLarge,),
+        title: Text(items.title, style: Theme.of(context).textTheme.titleLarge,),
         elevation: 0,
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(AddTaskScreen.routeName);
+                Navigator.of(context).pushNamed(AddTaskScreen.routeName, arguments: [lId]);
               },
               icon: const Icon(Icons.add),
           )
         ],
       ),
-      body: FutureBuilder(
-        future: Provider.of<Tasks>(context, listen: false).fetchAndSetTasks(),
-        builder: (ctx, snapshot) => snapshot.connectionState == ConnectionState.waiting
-            ? const Center(child: CircularProgressIndicator(),)
-            : Consumer<Tasks>(
-              builder: (ctx, task, ch) => task.tasks.isEmpty
-                  ? ch!
-                  : ListView.builder(
-                itemCount: task.tasks.length,
-                itemBuilder: (_, index) => TaskCard(
-                  task.tasks[index].id,
-                  index
-               ),
-            ),
-          child: const Center(child: Text('No Tasks Yet, Try to Add Some'),),
-        ),
+      body: items.tasksList!.isEmpty
+          ? const Center(child: Text('No tasks for the particular category'),)
+          : ListView.builder(
+        itemCount: items.tasksList!.length,
+          itemBuilder: (ctx, index) => TaskCard(items.lId, items.tasksList![index].id, index),
       ),
-      floatingActionButton:  FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).pushNamed(AddTaskScreen.routeName);
+          Navigator.of(context).pushNamed(AddTaskScreen.routeName, arguments: [lId]);
         },
         child: const Icon(Icons.add),
       ),
-    );
+      );
   }
 }

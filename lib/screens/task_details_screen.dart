@@ -16,7 +16,8 @@ class TaskDetailsScreen extends StatelessWidget {
     if(tryId == null ) {
       return const Scaffold(body: Center(child: Text('Task not found'),),);
     }
-    final task = Provider.of<Tasks>(context, listen: false).findById(tryId as String);
+    final id = tryId as List;
+    final task = Provider.of<Tasks>(context, listen: false).findById(id[0], id[1]);
 
      return Scaffold(
        appBar: AppBar(
@@ -25,7 +26,7 @@ class TaskDetailsScreen extends StatelessWidget {
          actions: [
            IconButton(
                onPressed: () async {
-                 await navigation.pushNamed(AddTaskScreen.routeName, arguments: task.id);
+                 await navigation.pushNamed(AddTaskScreen.routeName, arguments: [id[0], task.id]);
                  navigation.pop();
                },
                icon: const Icon(Icons.edit),
