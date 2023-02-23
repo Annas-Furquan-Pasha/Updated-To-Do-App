@@ -21,7 +21,7 @@ class TaskCard extends StatelessWidget {
       child: Dismissible(
         key: ValueKey(id),
         background: Container(
-          color: Colors.redAccent,
+          color: Colors.red,
           margin: const EdgeInsets.only(top: 8, right: 8, left: 8),
           alignment: Alignment.centerRight,
           padding: const EdgeInsets.all(8.0),

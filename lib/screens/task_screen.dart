@@ -29,10 +29,13 @@ class TaskScreen extends StatelessWidget {
       ),
       body: items.tasksList!.isEmpty
           ? const Center(child: Text('No tasks for the particular category'),)
-          : ListView.builder(
+          : RefreshIndicator(
+        onRefresh: () => Provider.of<Tasks>(context, listen: false).fetchAndSetTasks(),
+            child: ListView.builder(
         itemCount: items.tasksList!.length,
-          itemBuilder: (ctx, index) => TaskCard(items.lId, items.tasksList![index].id, index),
+            itemBuilder: (ctx, index) => TaskCard(items.lId, items.tasksList![index].id, index),
       ),
+          ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).pushNamed(AddTaskScreen.routeName, arguments: [lId]);
