@@ -19,7 +19,7 @@ class TaskListScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Enter Category Name', style: Theme.of(context).textTheme.titleSmall,),
+        title: Text('Enter List Name', style: Theme.of(context).textTheme.titleSmall,),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -29,7 +29,7 @@ class TaskListScreen extends StatelessWidget {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
-                label: const Text('Category',),
+                label: const Text('List',),
               ),
             ),
           ),
@@ -41,6 +41,14 @@ class TaskListScreen extends StatelessWidget {
                 Navigator.of(ctx).pop();
               }, child: const Text('cancel')),
               ElevatedButton(onPressed: () {
+                if(controller.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                       const SnackBar(
+                        content:  Text('List Name cannot be empty !!'),
+                        duration: Duration(seconds: 3),
+                  )
+                  );
+                } else {
                 if(taskList.lId == '') {
                   Provider.of<Tasks>(context, listen: false).addList(
                       TaskList('', controller.text, []));
@@ -50,7 +58,9 @@ class TaskListScreen extends StatelessWidget {
                       .updateListName(taskList.lId, TaskList(taskList.lId, controller.text, taskList.tasksList));
                   Navigator.of(ctx).pop();
                 }
-              }, child: taskList.lId == '' ? const Text('Add') : const Text('Rename')),
+                }
+                }, child: taskList.lId == '' ? const Text('Add') : const Text('Rename')
+              ),
             ],
           ),
         ],
@@ -100,10 +110,10 @@ class TaskListScreen extends StatelessWidget {
         ),
             ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => alertDialog(context, TaskList('', '')),
-        child: const Icon(Icons.add,),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () => alertDialog(context, TaskList('', '')),
+      //   child: const Icon(Icons.add,),
+      // ),
     );
   }
 }

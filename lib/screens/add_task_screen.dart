@@ -19,6 +19,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final _form = GlobalKey<FormState>();
   final _timeController = TextEditingController();
   final _dateController = TextEditingController();
+
   var id;
 
   var _isInit = true;
@@ -67,10 +68,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   }
 
   void _saveForm() {
-    // final isValid = _form.currentState!.validate();
-    // if(!isValid) {
-    //   return ;
-    // }
+    final isValid = _form.currentState!.validate();
+    if(!isValid) {
+      return ;
+    }
     _form.currentState?.save();
     if(_editTask.id != '') {
       Provider.of<Tasks>(context, listen: false).updateTask(id[0], _editTask.id, _editTask);
@@ -85,7 +86,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     final localization = MaterialLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Task'),
+        title: id.length == 1 ? const Text('Add Task') : const Text('Edit Task'),
         elevation: 0,
         actions: [
           IconButton(
@@ -102,6 +103,15 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             child: Column(
               children: [
                 TextFormField(
+                  validator: (value) {
+                    if(value!.isEmpty) {
+                      return 'Title cannot be empty !!';
+                    }
+                    if(value.length < 3) {
+                      return 'title length should be more than 3 characters';
+                    }
+                    return null;
+                  },
                   initialValue: _initValues['title'],
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
@@ -124,6 +134,15 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
                 const SizedBox(height: 20,),
                 TextFormField(
+                  validator: (value) {
+                    if(value!.isEmpty) {
+                      return 'Description cannot be empty !!';
+                    }
+                    if(value.length < 3) {
+                      return 'Description has to be more than 3 characters';
+                    }
+                    return null;
+                  },
                   initialValue: _initValues['description'],
                   textInputAction: TextInputAction.newline,
                   maxLines: 3,
@@ -150,6 +169,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   children: [
                     Expanded(
                       child: TextFormField(
+                        validator: (value) {
+                          if(value!.isEmpty) {
+                            return 'select time !!';
+                          }
+                          return null;
+                        },
                         controller: _timeController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
@@ -196,6 +221,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   children: [
                     Expanded(
                       child: TextFormField(
+                        validator: (value) {
+                          if(value!.isEmpty) {
+                            return 'select date !!';
+                          }
+                          return null;
+                        },
                         controller: _dateController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(

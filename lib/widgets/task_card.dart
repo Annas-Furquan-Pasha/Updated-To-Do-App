@@ -31,6 +31,12 @@ class TaskCard extends StatelessWidget {
         onDismissed: (direction) async {
           if(direction == DismissDirection.endToStart) {
             Provider.of<Tasks>(context, listen: false).deleteTask(lId, task.id);
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('task deleted'),
+                  duration: Duration(seconds: 3),
+                )
+            );
           }
         },
         child: Padding(
@@ -65,6 +71,12 @@ class TaskCard extends StatelessWidget {
                       IconButton(
                           onPressed: () {
                             Provider.of<Tasks>(context, listen: false).deleteTask(lId, task.id);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('task deleted'),
+                                  duration: Duration(seconds: 3),
+                                )
+                            );
                           },
                           icon: const Icon(Icons.delete, color: Colors.red,),
                       ),

@@ -28,7 +28,7 @@ class TaskScreen extends StatelessWidget {
         ],
       ),
       body: items.tasksList!.isEmpty
-          ? const Center(child: Text('No tasks for the particular category'),)
+          ? const Center(child: Text('No tasks for the particular list'),)
           : RefreshIndicator(
         onRefresh: () => Provider.of<Tasks>(context, listen: false).fetchAndSetTasks(),
             child: ListView.builder(
