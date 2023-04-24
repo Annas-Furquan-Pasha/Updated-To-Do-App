@@ -5,6 +5,7 @@ class Task {
     final String description;
     final String dueDate;
     final String dueTime;
+    int favorite = 0;
 
     Task({
         required this.lId,
@@ -13,6 +14,7 @@ class Task {
         required this.description,
         required this.dueDate,
         required this.dueTime,
+        this.favorite = 0,
         });
 }
 

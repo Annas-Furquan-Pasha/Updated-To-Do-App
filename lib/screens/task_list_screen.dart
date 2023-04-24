@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/drop_down_button.dart';
+import '../widgets/favorites_widget.dart';
+import '../widgets/task_list_widget.dart';
 import '../models/task.dart';
 import '../provider/tasks.dart';
-import './task_screen.dart';
 
 class TaskListScreen extends StatelessWidget {
   const TaskListScreen({Key? key}) : super(key: key);
@@ -79,41 +79,27 @@ class TaskListScreen extends StatelessWidget {
           IconButton(onPressed: () => alertDialog(context, TaskList('', '')), icon: const Icon(Icons.add)),
         ],
       ),
-      body: FutureBuilder(
-        future: Provider.of<Tasks>(context, listen: false).fetchAndSetTasks(),
-        builder: (ctx, snapshot) => snapshot.connectionState == ConnectionState.waiting
-            ? const Center(child: CircularProgressIndicator(),)
-            : RefreshIndicator(
-          onRefresh: () => Provider.of<Tasks>(context, listen: false).fetchAndSetTasks(),
-              child: Consumer<Tasks>(
-          builder: (ctx, tasksList, ch) => tasksList.tasks.isEmpty
-                ? ch!
-                :ListView.builder(
-              itemCount: tasksList.tasks.length,
-                itemBuilder: (_, index) => Container(
-                  padding: const EdgeInsets.all(8),
-                  margin: const EdgeInsets.only(top: 8, right: 8, left: 8,),
-                  child: Card(
-                    elevation: 5,
-                    child: ListTile(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(TaskScreen.routeName, arguments: tasksList.tasks[index].lId);
-                    },
-                    leading: CircleAvatar(backgroundColor: Theme.of(context).colorScheme.secondary,child: Text(index.toString(),style: Theme.of(context).textTheme.displaySmall,),),
-                    title: Text(tasksList.tasks[index].title, style: Theme.of(context).textTheme.displayLarge,),
-                    trailing: DropDownButtonWidget(tasksList.tasks[index], alertDialog),
-                      ),
-                  ),
-                ),
-          ),
-          child: const Center(child:Text('No tasks yet, try to add some')),
-        ),
+      body: Column(
+        children: [
+          ListTile(
+            title: const Text('Favorites', style: TextStyle(fontWeight: FontWeight.bold),),
+            trailing: Switch(
+              value: Provider.of<Tasks>(context).switchFavorite,
+              onChanged: (val)=> Provider.of<Tasks>(context, listen: false).changeFavoriteStatus(val)
             ),
+          ),
+          Expanded(
+            child: FutureBuilder(
+              future: Provider.of<Tasks>(context, listen: false).fetchAndSetTasks(),
+              builder: (ctx, snapshot) => snapshot.connectionState == ConnectionState.waiting
+                  ? const Center(child: CircularProgressIndicator(),)
+                  : Provider.of<Tasks>(context, listen: false).switchFavorite
+                  ? const FavoritesWidget()
+                  : TaskListWidget(alertDialog),
+            ),
+          ),
+        ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () => alertDialog(context, TaskList('', '')),
-      //   child: const Icon(Icons.add,),
-      // ),
     );
   }
 }

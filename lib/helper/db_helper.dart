@@ -17,7 +17,7 @@ class DBHelper {
   static Future<sql.Database> databaseTasks() async {
     final dbpath = await sql.getDatabasesPath();
     return sql.openDatabase(path.join(dbpath, 'tasks.db'), onCreate: (db, version) {
-      return db.execute('CREATE TABLE tasks(id TEXT PRIMARY KEY, lId TEXT, title TEXT, description TEXT, dueDate TEXT, dueTime TEXT)');
+      return db.execute('CREATE TABLE tasks(id TEXT PRIMARY KEY, lId TEXT, title TEXT, description TEXT, dueDate TEXT, dueTime TEXT, favorite INTEGER)');
     },
     version: 1,
     );
@@ -77,6 +77,7 @@ class DBHelper {
       'dueDate': task.dueDate,
       'dueTime': task.dueTime,
       'lId' : lId,
+      'favorite' : task.favorite,
     };
     return db.update(table, finalMap, where: where , whereArgs: whereArgs);
   }

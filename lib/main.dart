@@ -12,10 +12,10 @@ void main() => runApp(
   create: (_) => Tasks(),
   child:   MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: const TaskListScreen(),
+    initialRoute : TaskListScreen.routeName,
     theme: ThemeData(
       colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.pink).copyWith(secondary: Colors.amber),
-      //canvasColor: const Color.fromRGBO(255, 254, 229, 1),
+      // canvasColor: const Color.fromRGBO(255, 254, 229, 1),
       fontFamily: 'Raleway',
       textTheme: const TextTheme(
         displayLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'RobotoCondensed'),

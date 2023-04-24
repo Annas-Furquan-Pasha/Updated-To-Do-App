@@ -68,7 +68,7 @@ class TaskCard extends StatelessWidget {
                           },
                         icon: const Icon(Icons.edit),
                       ),
-                      IconButton(
+                     IconButton(
                           onPressed: () {
                             Provider.of<Tasks>(context, listen: false).deleteTask(lId, task.id);
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -79,6 +79,12 @@ class TaskCard extends StatelessWidget {
                             );
                           },
                           icon: const Icon(Icons.delete, color: Colors.red,),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          Provider.of<Tasks>(context, listen: false).toggleFavorite(task.lId, task.id);
+                        },
+                        icon: Icon(task.favorite == 1 ? Icons.star : Icons.star_border),
                       ),
                     ],
                   )
